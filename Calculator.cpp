@@ -193,7 +193,7 @@ std::string Calculator::addStrings(const std::string& num1, const std::string& n
         }
     }
 }
-
+/*
 void Calculator::processFile(const std::string& filename) {
     std::ifstream file(filename);
     if (!file.is_open()) {
@@ -208,17 +208,79 @@ void Calculator::processFile(const std::string& filename) {
         }
         if (line.empty()) continue;
 
+	std::string line;
+	int lineNum = 1;
+	while (std::getline(file, line)) {
+		if (!line.empty() && line.back() == '\r') {
+			line.pop_back();
+		}
+	
         std::stringstream ss(line);
         std::string token1, token2, extra;
         ss >> token1 >> token2 >> extra;
 
         if (token1.empty() || token2.empty() || !extra.empty()) {
-            std::cout << "ERROR: expected exactly two numbers\n";
+            std::cout << "line " << lineNum <<  ": ERROR: expected exactly two numbers\n";
+	    lineNum++;
             continue;
         }
 
         bool valid1 = isValidDouble(token1);
         bool valid2 = isValidDouble(token2);
+	
+	std::cout << "line " << lineNum << ": ";
+        if (!valid1 && !valid2) {
+            std::cout << "ERROR: invalid number \"" << token1 << "\" \"" << token2 << "\"\n";
+        } else if (!valid1) {
+            std::cout << "ERROR: invalid number \"" << token1 << "\"\n";
+        } else if (!valid2) {
+            std::cout << "ERROR: invalid number \"" << token2 << "\"\n";
+        } else {
+            std::string result = addStrings(token1, token2);
+            std::cout << token1 << " + " << token2 << " = " << result << "\n";
+        }
+	lineNum++;
+    }
+}
+*/
+
+void Calculator::processFile(const std::string& filename) {
+    std::ifstream file(filename);
+    if (!file.is_open()) {
+        std::cerr << "Error: Could not open file " << filename << std::endl;
+        return;
+    }
+
+    std::string line;
+    int lineNum = 1;
+
+    // Single loop to process every line sequentially
+    while (std::getline(file, line)) {
+        // Handle Windows-style carriage returns
+        if (!line.empty() && line.back() == '\r') {
+            line.pop_back();
+        }
+
+        // Skip empty lines, but increment line counter so tracking matches the file
+        if (line.empty()) {
+            lineNum++;
+            continue;
+        }
+
+        std::stringstream ss(line);
+        std::string token1, token2, extra;
+        ss >> token1 >> token2 >> extra;
+
+        if (token1.empty() || token2.empty() || !extra.empty()) {
+            std::cout << "Line " << lineNum << ": ERROR: expected exactly two numbers\n";
+            lineNum++;
+            continue;
+        }
+
+        bool valid1 = isValidDouble(token1);
+        bool valid2 = isValidDouble(token2);
+
+        std::cout << "Line " << lineNum << ": ";
 
         if (!valid1 && !valid2) {
             std::cout << "ERROR: invalid number \"" << token1 << "\" \"" << token2 << "\"\n";
@@ -230,7 +292,7 @@ void Calculator::processFile(const std::string& filename) {
             std::string result = addStrings(token1, token2);
             std::cout << token1 << " + " << token2 << " = " << result << "\n";
         }
+
+        lineNum++;
     }
 }
-
-
