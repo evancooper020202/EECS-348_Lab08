@@ -2,7 +2,7 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
-#include <<algorithm>
+#include <algorithm>
 
 bool Calculator::isValidDouble(const std::string& s) {
 	if (s.empty()) return false;
